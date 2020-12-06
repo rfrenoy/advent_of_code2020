@@ -1,33 +1,22 @@
 def read_input(in_f):
     res = []
-    group = dict()
-    nb_answers = 0
+    group = []
     for line in  in_f.readlines():
         if line != '\n':
-            nb_answers += 1
-            for l in line[:-1]:
-                if l in group:
-                    group[l] = group[l] + 1
-                else:
-                    group[l] = 1
+            group.append({l for l in line[:-1]})
         else:
-            res.append((nb_answers, group))
-            group = dict()
-            nb_answers = 0
+            res.append(group)
+            group = []
     return res
 
-def first_solution(arr_of_dicts):
-    res = 0
-    for _, d in arr_of_dicts:
-        res += len(d.keys())
-    return res
+def _solution(groups, func):
+    return sum(len(func(*g)) for g in groups)
 
-def second_solution(arr_of_dicts):
-    res = 0
-    for nb_answers, d in arr_of_dicts:
-        answered_by_all = [x for x in d.keys() if d[x] == nb_answers]
-        res += len(answered_by_all)
-    return res
+def first_solution(groups):
+    return _solution(groups, set.union)
+
+def second_solution(groups):
+    return _solution(groups, set.intersection)
 
 
 if __name__ == '__main__':
