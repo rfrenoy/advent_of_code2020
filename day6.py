@@ -1,13 +1,6 @@
 def read_input(in_f):
-    res = []
-    group = []
-    for line in  in_f.readlines():
-        if line != '\n':
-            group.append({l for l in line[:-1]})
-        else:
-            res.append(group)
-            group = []
-    return res
+    return [[set(l) for l in person_answer.split('\n')]
+            for person_answer in in_f.read().split('\n\n')]
 
 def _solution(groups, func):
     return sum(len(func(*g)) for g in groups)
