@@ -17,7 +17,10 @@ def occupied_neighboor(mat, i, j):
         for l in range(-1, 2):
             if k == l == 0:
                 continue
-            res += char_values[mat[i+k][j+l]]
+            m = 1
+            while (0 <= i+k*m < mat.shape[0]) and (0 <= j+l*m < mat.shape[1]) and (mat[i+k*m][j+l*m] == '.'):
+                m = m+1
+            res += char_values[mat[i+k*m][j+l*m]]
     return res
 
 def nb_adjacent_occupied_seats(mat):
@@ -46,7 +49,7 @@ def new_mat(occupied, mat):
         for j in range(occupied.shape[1]):
             if mat[i][j] == 'L' and occupied[i][j] == 0:
                 res[i][j] = '#'
-            if mat[i][j] == '#' and occupied[i][j] >= 4:
+            if mat[i][j] == '#' and occupied[i][j] >= 5:
                 res[i][j] = 'L'
     return res
 
