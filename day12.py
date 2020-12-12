@@ -1,28 +1,35 @@
+import numpy as np
+import math
+
+
 class Boat(object):
-    def __init__(self, direction):
-        self.direction = direction
-        self.position = {'N': 0, 'E': 0, 'S': 0, 'W': 0}
+    def __init__(self, waypoint):
+        self.waypoint = np.array(waypoint)
+        self.position = np.array([0, 0])
+
+    def rotation(self, theta):
+        self.waypoint = np.matmul(
+            np.array([
+                np.array([math.cos(theta), -math.sin(theta)]),
+                np.array([math.sin(theta), math.cos(theta)])
+            ]), self.waypoint)
 
     def turn_right(self, value):
-        turn = {'N': 'E', 'E': 'S', 'S': 'W', 'W': 'N'}
         for _ in range(int(value / 90)):
-            self.direction = turn[self.direction]
-        return self.direction
+            self.rotation(-math.pi / 2)
 
     def turn_left(self, value):
-        turn = {'N': 'W', 'E': 'N', 'S': 'E', 'W': 'S'}
         for _ in range(int(value / 90)):
-            self.direction = turn[self.direction]
-        return self.direction
+            self.rotation(math.pi / 2)
 
     def forward(self, value):
-        self.position[self.direction] += value
+        self.position = self.position + value * self.waypoint
 
     def manhattan(self):
-        return abs(self.position['N'] - self.position['S']) + abs(self.position['E'] - self.position['W'])
+        return np.absolute(self.position).sum()
 
     def __repr__(self):
-        return f'Facing {self.direction}, {self.position["N"]}/{self.position["E"]}/{self.position["S"]}/{self.position["W"]}'
+        return f'Facing {self.waypoint}, {self.position}'
 
 
 def read_file(buff):
@@ -32,7 +39,7 @@ def read_file(buff):
 if __name__ == '__main__':
     with open('data/day12.txt', 'r') as in_f:
         lines = read_file(in_f)
-    boat = Boat('E')
+    boat = Boat((10, 1))
     for action, value in lines:
         print(boat)
         print(action, value)
@@ -43,7 +50,10 @@ if __name__ == '__main__':
         elif action == 'F':
             boat.forward(value)
         else:
-            boat.position[action] += value
+            args = {'N': [1, 1], 'S': [1, -1], 'W': [0, -1], 'E': [0, 1]}
+            idx = args[action][0]
+            mul = args[action][1]
+            boat.waypoint[idx] = boat.waypoint[idx] + mul * value
         print(boat)
         print()
-    print(boat.manhattan())
+    print(f'Final result is {boat.manhattan()}')
