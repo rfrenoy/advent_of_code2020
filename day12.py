@@ -31,6 +31,12 @@ class Boat(object):
     def __repr__(self):
         return f'Facing {self.waypoint}, {self.position}'
 
+    def adjust_waypoint(self, direction, value):
+        args = {'N': [1, 1], 'S': [1, -1], 'W': [0, -1], 'E': [0, 1]}
+        idx = args[direction][0]
+        mul = args[direction][1]
+        self.waypoint[idx] = self.waypoint[idx] + mul * value
+
 
 def read_file(buff):
     return ((x[0], int(x[1:])) for x in buff.readlines())
@@ -50,10 +56,6 @@ if __name__ == '__main__':
         elif action == 'F':
             boat.forward(value)
         else:
-            args = {'N': [1, 1], 'S': [1, -1], 'W': [0, -1], 'E': [0, 1]}
-            idx = args[action][0]
-            mul = args[action][1]
-            boat.waypoint[idx] = boat.waypoint[idx] + mul * value
-        print(boat)
+            boat.adjust_waypoint(action, value)
         print()
     print(f'Final result is {boat.manhattan()}')
