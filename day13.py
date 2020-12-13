@@ -33,16 +33,13 @@ def currated_bus_ids_and_offsets(bus_ids):
 
 def solve2(bus_ids):
     currated, offsets = currated_bus_ids_and_offsets(bus_ids)
-    timestamp = 0
+    timestamp = np.min(currated)
     while True:
         check = check_timestamp(timestamp, currated, offsets)
         if check.all():
             return timestamp
         else:
-            if check.any():
-                timestamp += np.lcm.reduce(currated[check])
-            else:
-                timestamp += 1
+            timestamp += np.lcm.reduce(currated[check])
 
 if __name__ == '__main__':
     with open('data/day13.txt', 'r') as in_f:
