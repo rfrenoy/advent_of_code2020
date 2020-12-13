@@ -33,7 +33,7 @@ def currated_bus_ids_and_offsets(bus_ids):
 
 def solve2(bus_ids):
     currated, offsets = currated_bus_ids_and_offsets(bus_ids)
-    timestamp = np.min(currated)
+    timestamp = currated[0]
     while True:
         check = check_timestamp(timestamp, currated, offsets)
         if check.all():
